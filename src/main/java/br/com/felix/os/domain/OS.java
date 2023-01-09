@@ -42,11 +42,10 @@ public class OS {
 		this.setStatus(Status.ABERTO);
 	}
 
-	public OS(Integer id, LocalDateTime dataFechamento, Prioridade prioridade, String observacoes, Status status, Tecnico tecnico, Cliente cliente) {
+	public OS(Integer id, Prioridade prioridade, String observacoes, Status status, Tecnico tecnico, Cliente cliente) {
 		super();
 		this.id = id;
 		this.setDataAbertura(LocalDateTime.now());
-		this.dataFechamento = dataFechamento;
 		this.prioridade = (prioridade == null) ? 0 : prioridade.getCod();
 		this.observacoes = observacoes;
 		this.status = (status == null) ? 0 : status.getCod();

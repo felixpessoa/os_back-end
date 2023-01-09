@@ -41,6 +41,7 @@ public class OsService {
 	}
 
 	public OS create(@Valid OSDTO obj) {
+		obj.setDataAbertura(LocalDateTime.now());
 		return fromDTO(obj);
 	}
 	
@@ -53,8 +54,8 @@ public class OsService {
 		OS newObj = new OS();
 		newObj.setId(obj.getId());
 		newObj.setObservacoes(obj.getObservacoes());
-		newObj.setPrioridade(Prioridade.toEnum(obj.getPrioridade()));
-		newObj.setStatus(Status.toEnum(obj.getStatus()));
+		newObj.setPrioridade(Prioridade.toEnum(obj.getPrioridade().getCod()));
+		newObj.setStatus(Status.toEnum(obj.getStatus().getCod()));
 
 		Tecnico tec = tecnicoService.findById(obj.getTecnico());
 		Cliente cli = clienteService.findById(obj.getCliente());
@@ -65,6 +66,7 @@ public class OsService {
 		if(newObj.getStatus().getCod().equals(2)) {
 			newObj.setDataFechamento(LocalDateTime.now());
 		}
+		
 
 		return repository.save(newObj);
 	}
