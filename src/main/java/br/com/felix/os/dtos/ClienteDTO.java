@@ -18,6 +18,11 @@ public class ClienteDTO implements Serializable {
 
 	@NotEmpty(message = "O campo NOME é requerido")
 	private String nome;
+	
+	@NotEmpty(message = "O campo Email é requerido")
+	private String email;
+	
+	private String senha;
 
 	@CPF
 	@NotEmpty(message = "O campo CPF é requerido")
@@ -31,13 +36,14 @@ public class ClienteDTO implements Serializable {
 
 	public ClienteDTO() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public ClienteDTO(Cliente obj) {
 		super();
 		this.id = obj.getId();
 		this.nome = obj.getNome();
+		this.email = obj.getEmail();
+		this.senha = obj.getSenha();
 		this.cpf = obj.getCpf();
 		this.telefone = obj.getTelefone();
 		this.dc = obj.getDc();
@@ -57,6 +63,22 @@ public class ClienteDTO implements Serializable {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
 	}
 
 	public String getCpf() {
@@ -82,5 +104,7 @@ public class ClienteDTO implements Serializable {
 	public void setDc(LocalDateTime dc) {
 		this.dc = dc;
 	}
+
+
 
 }

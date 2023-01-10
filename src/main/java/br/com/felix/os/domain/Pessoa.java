@@ -2,17 +2,30 @@ package br.com.felix.os.domain;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Email;
 
 import org.hibernate.validator.constraints.br.CPF;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+import br.com.felix.os.domain.enuns.Perfil;
+import lombok.Data;
+
+
 @Entity
+@Data
 public abstract class Pessoa implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -20,26 +33,35 @@ public abstract class Pessoa implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
-	
+	@Email
+	@Column(unique = true)
+	private String email;
+	private String senha;
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "PERFIS")
+	protected Set<Integer> perfils = new HashSet<>();
 	@CPF
+	@Column(unique = true)
 	private String cpf;
 	private String telefone;
-	
+    
 	@JsonFormat(pattern = "dd/MM/yyyy HH:mm")
-	private LocalDateTime dc;
+	private LocalDateTime dc = LocalDateTime.now();
 
 	public Pessoa() {
 		super();
-		this.setDc(LocalDateTime.now());
+		addPerfil(Perfil.CLIENTE);
 	}
 
-	public Pessoa(Integer id, String nome, String cpf, String telefone) {
+	public Pessoa(Integer id, String nome, String email, String senha, String cpf, String telefone) {
 		super();
 		this.id = id;
 		this.nome = nome;
+		this.email = email;
+		this.senha = senha;
 		this.cpf = cpf;
 		this.telefone = telefone;
-		this.setDc(LocalDateTime.now());
+		addPerfil(Perfil.CLIENTE);
 	}
 
 	public Integer getId() {
@@ -56,6 +78,30 @@ public abstract class Pessoa implements Serializable {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+
+	public Set<Perfil> getPerfils() {
+		return perfils.stream().map(x -> Perfil.toEnum(x)).collect(Collectors.toSet());
+	}
+
+	public void addPerfil(Perfil perfil) {
+		this.perfils.add(perfil.getCod());
 	}
 
 	public String getCpf() {
@@ -82,21 +128,10 @@ public abstract class Pessoa implements Serializable {
 		this.dc = dc;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(cpf, id);
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Pessoa other = (Pessoa) obj;
-		return Objects.equals(cpf, other.cpf) && Objects.equals(id, other.id);
-	}
+	
+	
 
 }
